@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মতিঝিল এ-জিবি কলোনি জামে মসজিদ</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Hidden Admin Access - Only visible after login */
+        .admin-access {
+            display: none;
+        }
+
+        .admin-access.visible {
+            display: block;
+        }
+
+        /* Login Modal */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 20000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-box h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .login-btn {
+            background: #1e3c72;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background: #2a5298;
+        }
+
+        .login-error {
+            color: #dc3545;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Admin Panel Button - Only visible to logged in admin */
+        .admin-panel {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #1e3c72;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .admin-panel:hover {
+            background: #2a5298;
+            transform: translateY(-2px);
+        }
+
+        /* Hidden Admin Trigger Area - Invisible to normal users */
+        .admin-trigger {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            z-index: 9998;
+            cursor: default;
+        }
+
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .admin-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            flex-wrap: wrap;
+        }
+
+        .admin-tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .admin-tab.active {
+            color: #1e3c72;
+            border-bottom: 2px solid #1e3c72;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .admin-btn {
+            background: #1e3c72;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .admin-btn:hover {
+            background: #2a5298;
+        }
+
+        .member-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ffd700;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%231e3c72" width="1200" height="600"/><path fill="%232a5298" d="M0 400Q300 200 600 400T1200 400V600H0z"/></svg>');
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: 70px;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .location-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,215,0,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #ffd700;
+            color: #1e3c72;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,215,0,0.4);
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .container {
+            padding: 0 2rem;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1e3c72;
+        }
+
+        /* Prayer Times */
+        .prayer-times {
+            background: #f8f9fa;
+        }
+
+        .prayer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .prayer-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .prayer-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .prayer-time {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1e3c72;
+            margin: 1rem 0;
+        }
+
+        /* Jumma Section - Below all prayers */
+        .jumma-section {
+            margin-top: 40px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .jumma-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .jumma-time-main {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin: 10px 0;
+        }
+
+        .jumma-details {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Hadith Section */
+        .hadith-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .hadith-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .hadith-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-right: 5px solid #1e3c72;
+            transition: transform 0.3s;
+        }
+
+        .hadith-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .hadith-arabic {
+            font-family: 'Traditional Arabic', 'Scheherazade New', serif;
+            font-size: 1.5rem;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            line-height: 2;
+            text-align: right;
+            direction: rtl;
+        }
+
+        .hadith-bangla {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .hadith-source {
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+
+        .hadith-fazilat {
+            background: #1e3c72;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        /* Committee Section */
+        .committee {
+            background: white;
+        }
+
+        .committee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .committee-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+            border: 2px solid #e9ecef;
+        }
+
+        .committee-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .committee-card.imam-card {
+            border: 3px solid #ffd700;
+            transform: scale(1.02);
+        }
+
+        .committee-card.khatib-card {
+            border: 3px solid #1e3c72;
+            background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
+        }
+
+        .committee-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+
+        .committee-card.imam-card .committee-img {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1e3c72;
+        }
+
+        .committee-card.khatib-card .committee-img {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .committee-info {
+            padding: 1.5rem;
+        }
+
+        .committee-role {
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            background: #1e3c72;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .committee-card.imam-card .committee-role {
+            background: #ffd700;
+            color: #1e3c72;
+        }
+
+        .committee-card.khatib-card .committee-role {
+            background: #28a745;
+            color: white;
+        }
+
+        /* Services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .service-card i {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        /* Contact & Map */
+        .contact {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .contact-info h3 {
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .contact-item i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #ffd700;
+            width: 30px;
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+        }
+
+        .contact-form {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+            font-size: 1rem;
+        }
+
+        .submit-btn {
+            background: #ffd700;
+            color: #1e3c72;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #1e3c72;
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .prayer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .member-row {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-panel {
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .hadith-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .jumma-time-main {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden Admin Trigger - Invisible corner click area -->
+    <div class="admin-trigger" onclick="openLogin()" title="Admin Access"></div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="login-modal">
+        <div class="login-box">
+            <h2><i class="fas fa-lock"></i> Admin Login</h2>
+            <p style="color: #666; margin-bottom: 20px;">মতিঝিল এ-জিবি কলোনি জামে মসজিদ</p>
+            <input type="password" id="passwordInput" class="login-input" placeholder="পাসওয়ার্ড দিন" onkeypress="if(event.key==='Enter')checkPassword()">
+            <button class="login-btn" onclick="checkPassword()">
+                <i class="fas fa-sign-in-alt"></i> লগইন
+            </button>
+            <p class="login-error" id="loginError">
+                <i class="fas fa-exclamation-circle"></i> ভুল পাসওয়ার্ড!
+            </p>
+            <button onclick="closeLogin()" style="margin-top: 15px; background: none; border: none; color: #666; cursor: pointer;">
+                <i class="fas fa-times"></i> বন্ধ করুন
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Panel Button - Only visible after login -->
+    <div id="adminPanelBtn" class="admin-access admin-panel" onclick="openAdmin()">
+        <i class="fas fa-cog"></i> Admin
+    </div>
+
+    <!-- Admin Modal - Only accessible after login -->
+    <div id="adminModal" class="admin-modal">
+        <div class="admin-content">
+            <h2 style="margin-bottom: 20px; color: #1e3c72;">Admin Panel</h2>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchTab('prayer')">নামাজের সময়</button>
+                <button class="admin-tab" onclick="switchTab('imam')">ইমাম ও খতীব</button>
+                <button class="admin-tab" onclick="switchTab('committee')">কমিটি</button>
+            </div>
+
+            <!-- Prayer Times Edit -->
+            <div id="prayerTab" class="tab-content active">
+                <h3>নামাজের সময় আপডেট করুন</h3>
+                <div id="prayerInputs">
+                    <div style="margin-bottom: 15px;">
+                        <label>ফজর (Fajr)</label>
+                        <input type="time" id="fajrInput" class="admin-input">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>যোহর (Dhuhr)</label>
+                        <input type="time" id="dhuhrInput" class="admin-input">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>আসর (Asr)</label>
+                        <input type="time" id="asrInput" class="admin-input">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>মাগরিব (Maghrib)</label>
+                        <input type="time" id="maghribInput" class="admin-input">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>এশা (Isha)</label>
+                        <input type="time" id="ishaInput" class="admin-input">
+                    </div>
+                    <div style="margin-bottom: 15px; padding: 15px; background: #fff3cd; border-radius: 8px;">
+                        <label style="color: #856404; font-weight: bold;">জুমার নামাজ (Friday Prayer)</label>
+                        <input type="time" id="jummaInput" class="admin-input" style="margin-top: 5px;">
+                    </div>
+                </div>
+                <button class="admin-btn" onclick="savePrayerTimes()">সময় সংরক্ষণ করুন</button>
+            </div>
+
+            <!-- Imam & Khatib Edit -->
+            <div id="imamTab" class="tab-content">
+                <h3>ইমাম ও খতীব পরিচালনা</h3>
+                <div style="margin-bottom: 20px; padding: 15px; background: #e7f3ff; border-radius: 8px;">
+                    <p style="color: #1e3c72; font-size: 0.9rem;">
+                        <i class="fas fa-info-circle"></i> 
+                        এখানে ২ জন ইমাম ও ১ জন খতীবের তথ্য সংরক্ষণ করুন।
+                    </p>
+                </div>
+                <div id="imamInputs">
+                    <!-- Dynamic inputs -->
+                </div>
+                <button class="admin-btn" onclick="addImamRow()" style="background: #28a745; margin-right: 10px;">
+                    <i class="fas fa-plus"></i> যোগ করুন
+                </button>
+                <button class="admin-btn" onclick="saveImams()">সংরক্ষণ করুন</button>
+            </div>
+
+            <!-- Committee Edit -->
+            <div id="committeeTab" class="tab-content">
+                <h3>কমিটি সদস্য পরিচালনা</h3>
+                <div id="committeeInputs">
+                    <!-- Dynamic committee inputs -->
+                </div>
+                <button class="admin-btn" onclick="addCommitteeRow()" style="background: #28a745; margin-right: 10px;">
+                    <i class="fas fa-plus"></i> সদস্য যোগ করুন
+                </button>
+                <button class="admin-btn" onclick="saveCommittee()">কমিটি সংরক্ষণ করুন</button>
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee; text-align: center;">
+                <button class="admin-btn" onclick="logout()" style="background: #dc3545;">
+                    <i class="fas fa-sign-out-alt"></i> লগআউট
+                </button>
+            </div>
+
+            <button onclick="closeAdmin()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-mosque"></i> মতিঝিল এ-জিবি কলোনি জামে মসজিদ
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">হোম</a></li>
+                <li><a href="#prayer">নামাজের সময়</a></li>
+                <li><a href="#hadith">হাদিস</a></li>
+                <li><a href="#committee">কমিটি</a></li>
+                <li><a href="#services">সেবাসমূহ</a></li>
+                <li><a href="#contact">যোগাযোগ</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content container">
+            <div class="location-badge">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Motijheel AGB Colony, Dhaka 1000</span>
+            </div>
+            <h1>মতিঝিল এ-জিবি কলোনি জামে মসজিদ</h1>
+            <p>ঈমান, শান্তি ও সম্প্রীতির কেন্দ্রস্থল</p>
+            <a href="#prayer" class="cta-button">নামাজের সময় দেখুন</a>
+        </div>
+    </section>
+
+    <!-- Prayer Times -->
+    <section id="prayer" class="prayer-times">
+        <div class="container">
+            <h2>আজকের নামাজের সময়সূচি</h2>
+            
+            <div class="prayer-grid" id="prayerGrid">
+                <div class="prayer-card">
+                    <i class="fas fa-sun"></i>
+                    <div>ফজর (Fajr)</div>
+                    <div class="prayer-time" id="fajrTime">5:30 AM</div>
+                </div>
+                <div class="prayer-card">
+                    <i class="fas fa-sun"></i>
+                    <div>যোহর (Dhuhr)</div>
+                    <div class="prayer-time" id="dhuhrTime">12:45 PM</div>
+                </div>
+                <div class="prayer-card">
+                    <i class="fas fa-cloud-sun"></i>
+                    <div>আসর (Asr)</div>
+                    <div class="prayer-time" id="asrTime">4:20 PM</div>
+                </div>
+                <div class="prayer-card">
+                    <i class="fas fa-moon"></i>
+                    <div>মাগরিব (Maghrib)</div>
+                    <div class="prayer-time" id="maghribTime">6:35 PM</div>
+                </div>
+                <div class="prayer-card">
+                    <i class="fas fa-moon"></i>
+                    <div>এশা (Isha)</div>
+                    <div class="prayer-time" id="ishaTime">8:10 PM</div>
+                </div>
+            </div>
+
+            <!-- Jumma Section - Below all prayers -->
+            <div class="jumma-section">
+                <h3><i class="fas fa-star"></i> জুমার নামাজ (Friday Prayer)</h3>
+                <div class="jumma-time-main" id="jummaTime">১:০০ PM</div>
+                <div class="jumma-details">
+                    <p><i class="fas fa-clock"></i> খুতবা শুরু: ১২:৪৫ PM | নামাজ: ১:০০ PM</p>
+                    <p style="margin-top: 10px;"><i class="fas fa-user"></i> খতীব: <span id="khatibNameDisplay">মাওলানা ফজলুল করিম</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hadith Section -->
+    <section id="hadith" class="hadith-section">
+        <div class="container">
+            <h2>নামাজের ফজিলত ও গুরুত্ব</h2>
+            <p style="text-align: center; margin-bottom: 2rem; color: #666; font-size: 1.1rem;">
+                নামাজের প্রতি উদ্বুদ্ধকারী কিছু সহিহ হাদিস
+            </p>
+            
+            <div class="hadith-grid">
+                <div class="hadith-card">
+                    <span class="hadith-fazilat"><i class="fas fa-praying-hands"></i> নামাজই সবচেয়ে গুরুত্বপূর্ণ</span>
+                    <div class="hadith-arabic">
+                        بُنِي الإِسْلاَمُ عَلَى خَمْسٍ: شَهَادَةِ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَإِقَامِ الصَّلاَةِ...
+                    </div>
+                    <div class="hadith-bangla">
+                        "ইসলাম পাঁচটি স্তম্ভের উপর প্রতিষ্ঠিত: এক আল্লাহ ছাড়া কোনো ইলাহ নেই এবং মুহাম্মাদ তাঁর রাসূল - এই কথার সাক্ষ্য দেওয়া, নামাজ কায়েম করা..."
+                    </div>
+                    <div class="hadith-source">
+                        <i class="fas fa-book"></i> সহিহ বুখারী: ৮, সহিহ মুসলিম: ১৬
+                    </div>
+                </div>
+
+                <div class="hadith-card">
+                    <span class="hadith-fazilat"><i class="fas fa-door-open"></i> নামাজের ব্যাপারে সতর্কতা</span>
+                    <div class="hadith-arabic">
+                        الْعَهْدُ الَّذِي بَيْنَنَا وَبَيْنَهُمُ الصَّلاَةُ، فَمَنْ تَرَكَهَا فَقَدْ كَفَرَ
+                    </div>
+                    <div class="hadith-bangla">
+                        "আমাদের ও তাদের (মুনাফিকদের) মধ্যে পার্থক্য নামাজ। সুতরাং যে ব্যক্তি নামাজ ত্যাগ করল, সে কুফরি করল।"
+                    </div>
+                    <div class="hadith-source">
+                        <i class="fas fa-book"></i> সহিহ মুসলিম: ১৮২
+                    </div>
+                </div>
+
+                <div class="hadith-card">
+                    <span class="hadith-fazilat"><i class="fas fa-fire"></i> নামাজ না পড়লে পরিণতি</span>
+                    <div class="hadith-arabic">
+                        إِنَّ بَيْنَ الرَّجُلِ وَبَيْنَ الشِّرْكِ وَالْكُفْرِ تَرْكُ الصَّلاَةِ
+                    </div>
+                    <div class="hadith-bangla">
+                        "নিশ্চয়ই এক ব্যক্তির ও শিরক-কুফরের মধ্যে পার্থক্য হলো নামাজ ত্যাগ করা।"
+                    </div>
+                    <div class="hadith-source">
+                        <i class="fas fa-book"></i> সহিহ মুসলিম: ১৮২
+                    </div>
+                </div>
+
+                <div class="hadith-card">
+                    <span class="hadith-fazilat"><i class="fas fa-lightbulb"></i> নামাজের প্রতি উদ্বুদ্ধকারী</span>
+                    <div class="hadith-arabic">
+                        مَنْ حَافَظَ عَلَيْهَا كَانَتْ لَهُ نُورًا وَبُرْهَانًا وَنَجَاةً يَوْمَ الْقِيَامَةِ
+                    </div>
+                    <div class="hadith-bangla">
+                        "যে ব্যক্তি নামাজের হিফাজত করবে, কিয়ামতের দিন তা তার জন্য নূর, দলিল এবং নাজাত হবে।"
+                    </div>
+                    <div class="hadith-source">
+                        <i class="fas fa-book"></i> সহিহ মুসলিম: ২২৩
+                    </div>
+                </div>
+
+                <div class="hadith-card">
+                    <span class="hadith-fazilat"><i class="fas fa-mosque"></i> মসজিদের ফজিলত</span>
+                    <div class="hadith-arabic">
+                        مَنْ غَدَا إِلَى الْمَسْجِدِ أَوْ رَاحَ، أَعَدَّ اللَّهُ لَهُ فِيهِ نُزُلاً كُلَّمَا غَدَا أَوْ رَاحَ
+                    </div>
+                    <div class="hadith-bangla">
+                        "যে ব্যক্তি সকালে মসজিদে যায় অথবা সন্ধ্যায় যায়, আল্লাহ তাকে প্রতিবার মসজিদে আসার জন্য জান্নাতে একেকটি বাড়ি প্রস্তুত করে রাখেন।"
+                    </div>
+                    <div class="hadith-source">
+                        <i class="fas fa-book"></i> সহিহ বুখারী: ৬৬২
+                    </div>
+                </div>
+
+                <div class="hadith-card">
+                    <span class="hadith-fazilat"><i class="fas fa-users"></i> জামাতে নামাজের ফজিলত</span>
+                    <div class="hadith-arabic">
+                        صَلاَةُ الْجَمَاعَةِ تَفْضُلُ عَلَى صَلاَةِ الْفَذِّ بِسَبْعٍ وَعِشْرِينَ دَرَجَةً
+                    </div>
+                    <div class="hadith-bangla">
+                        "জামাতে নামাজ একাকী নামাজের চেয়ে সাতাশ ডিগ্রি বেশি উত্তম।"
+                    </div>
+                    <div class="hadith-source">
+                        <i class="fas fa-book"></i> সহিহ বুখারী: ৬৪৫, সহিহ মুসলিম: ৬৫১
+                    </div>
+                </div>
+
+                <div class="hadith-card">
+                    <span class="hadith-fazilat"><i class="fas fa-clock"></i> ওয়াক্ত মতো নামাজ</span>
+                    <div class="hadith-arabic">
+                        فَضْلُ صَلاَةِ الْمَرْءِ فِي جَمَاعَةٍ مِنْ صَلاَتِهِ فِي بَيْتِهِ وَفِي حِيطَانِهِ خَمْسٌ وَعِشْرُونَ ضِعْفًا
+                    </div>
+                    <div class="hadith-bangla">
+                        "মসজিদে জামাতে আদায়কৃত নামাজের চেয়ে বাড়িতে আদায়কৃত নামাজের ফজিলত পঁচিশ গুণ বেশি।"
+                    </div>
+                    <div class="hadith-source">
+                        <i class="fas fa-book"></i> সহিহ বুখারী: ৬৪৯
+                    </div>
+                </div>
+
+                <div class="hadith-card">
+                    <span class="hadith-fazilat"><i class="fas fa-star-and-crescent"></i> প্রথম কাজ</span>
+                    <div class="hadith-arabic">
+                        إِنَّ أَوَّلَ مَا يُحَاسَبُ بِهِ الْعَبْدُ يَوْمَ الْقِيَامَةِ مِنْ عَمَلِهِ صَلاَتُهُ
+                    </div>
+                    <div class="hadith-bangla">
+                        "কিয়ামতের দিন বান্দার আমলের মধ্যে সর্বপ্রথম নামাজের হিসাব নেওয়া হবে। যদি নামাজ ঠিক থাকে, তবে বাকি আমলও ঠিক থাকবে।"
+                    </div>
+                    <div class="hadith-source">
+                        <i class="fas fa-book"></i> সহিহ বুখারী: ৫২৭, সুনান আত-তিরমিজি: ৪১৩
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Committee Section with Imam & Khatib -->
+    <section id="committee" class="committee">
+        <div class="container">
+            <h2>মসজিদ কমিটি, ইমাম ও খতীব ২০২৪</h2>
+            
+            <!-- Imam Section -->
+            <h3 style="text-align: center; color: #1e3c72; margin-bottom: 20px;">
+                <i class="fas fa-star" style="color: #ffd700;"></i> ইমাম ও খতীব
+            </h3>
+            <div class="committee-grid" id="imamGrid">
+                <div class="committee-card imam-card">
+                    <div class="committee-img">
+                        <i class="fas fa-quran"></i>
+                    </div>
+                    <div class="committee-info">
+                        <div class="committee-role">ইমাম (Imam)</div>
+                        <h3>মাওলানা ফজলুল করিম</h3>
+                        <p><i class="fas fa-phone"></i> 01715-678901</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                            <i class="fas fa-graduation-cap"></i> ক্বারি ও মুফাসসির<br>
+                            <i class="fas fa-clock"></i> প্রতিদিন ৫ ওয়াক্ত নামাজ
+                        </p>
+                    </div>
+                </div>
+                <div class="committee-card imam-card">
+                    <div class="committee-img">
+                        <i class="fas fa-quran"></i>
+                    </div>
+                    <div class="committee-info">
+                        <div class="committee-role">সহকারী ইমাম (Asst. Imam)</div>
+                        <h3>মাওলানা আব্দুর রহমান</h3>
+                        <p><i class="fas fa-phone"></i> 01716-789012</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                            <i class="fas fa-graduation-cap"></i> হাফেজ ও ক্বারি<br>
+                            <i class="fas fa-moon"></i> তরাবীহ ও তাহাজ্জুদ
+                        </p>
+                    </div>
+                </div>
+                <div class="committee-card khatib-card">
+                    <div class="committee-img">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="committee-info">
+                        <div class="committee-role">খতীব (Khatib)</div>
+                        <h3 id="khatibNameCard">মাওলানা ফজলুল করিম</h3>
+                        <p><i class="fas fa-phone"></i> 01715-678901</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                            <i class="fas fa-calendar-day"></i> প্রতি শুক্রবার জুমার খুতবা<br>
+                            <i class="fas fa-book"></i> ইসলামিক বক্তৃতা
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Committee Members -->
+            <h3 style="text-align: center; color: #1e3c72; margin: 40px 0 20px;">
+                <i class="fas fa-users"></i> মসজিদ কমিটি
+            </h3>
+            <div class="committee-grid" id="committeeGrid">
+                <div class="committee-card">
+                    <div class="committee-img">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="committee-info">
+                        <div class="committee-role">সভাপতি (President)</div>
+                        <h3>মোহাম্মদ আব্দুল্লাহ</h3>
+                        <p><i class="fas fa-phone"></i> 01712-345678</p>
+                    </div>
+                </div>
+                <div class="committee-card">
+                    <div class="committee-img">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="committee-info">
+                        <div class="committee-role">সাধারণ সম্পাদক (Secretary)</div>
+                        <h3>মোহাম্মদ রফিকুল ইসলাম</h3>
+                        <p><i class="fas fa-phone"></i> 01713-456789</p>
+                    </div>
+                </div>
+                <div class="committee-card">
+                    <div class="committee-img">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="committee-info">
+                        <div class="committee-role">কোষাধ্যক্ষ (Treasurer)</div>
+                        <h3>মোহাম্মদ আলী হোসেন</h3>
+                        <p><i class="fas fa-phone"></i> 01714-567890</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services">
+        <div class="container">
+            <h2>আমাদের সেবাসমূহ</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-mosque"></i>
+                    <h3>পাঁচ ওয়াক্ত নামাজ</h3>
+                    <p>ফজর, যোহর, আসর, মাগরিব ও এশা জামাতে নামাজ আদায়ের সুব্যবস্থা।</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-book-open"></i>
+                    <h3>কোরআন শিক্ষা</h3>
+                    <p>তাজবিদ, হিফজ ও তাফসির ক্লাস সকল বয়সের জন্য।</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-users"></i>
+                    <h3>জুমার নামাজ</h3>
+                    <p>প্রতি শুক্রবার জুমার নামাজ ও খুতবার বিশেষ ব্যবস্থা।</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-child"></i>
+                    <h3>মাদ্রাসা</h3>
+                    <p>শিশুদের জন্য আধুনিক পদ্ধতিতে ইসলামিক শিক্ষা।</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Map -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 style="color: white;">যোগাযোগ করুন</h2>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>আমাদের ঠিকানা</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Motijheel AGB Colony, Dhaka 1000, Bangladesh</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+880 2-9551030</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>info@motijheelagb-mosque.org</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>২৪ ঘন্টা নামাজের জন্য উন্মুক্ত</span>
+                    </div>
+                    
+                    <div class="map-container" style="margin-top: 20px;">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3652.158726078291!2d90.4219!3d23.7363!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b85c366afdaf%3A0x5a5d5d5d5d5d5d5d!2sMotijheel%20AGB%20Colony%2C%20Dhaka%201000!5e0!3m2!1sen!2sbd!4v1703000000000!5m2!1sen!2sbd" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3 style="color: #ffd700; margin-bottom: 20px;">মেসেজ পাঠান</h3>
+                    <form>
+                        <div class="form-group">
+                            <label>নাম</label>
+                            <input type="text" placeholder="আপনার নাম" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ইমেইল</label>
+                            <input type="email" placeholder="আপনার ইমেইল" required>
+                        </div>
+                        <div class="form-group">
+                            <label>বিষয়</label>
+                            <input type="text" placeholder="বিষয় লিখুন">
+                        </div>
+                        <div class="form-group">
+                            <label>মেসেজ</label>
+                            <textarea rows="5" placeholder="আপনার মেসেজ লিখুন..." required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i> পাঠান
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; ২০২৪ মতিঝিল এ-জিবি কলোনি জামে মসজিদ, ঢাকা ১০০০</p>
+            <p style="margin-top: 10px; color: #ffd700;">
+                <i class="fas fa-heart"></i> ঈমান ও ভালোবাসায় সম্প্রদায় সেবা
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Security Configuration - CHANGE THIS PASSWORD
+        const ADMIN_PASSWORD = 'admin123'; // এখানে আপনার নিজের পাসওয়ার্ড দিন
+        
+        let isLoggedIn = false;
+
+        // Hidden Admin Access - Click bottom-right corner to open login
+        function openLogin() {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function closeLogin() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            if (input === ADMIN_PASSWORD) {
+                isLoggedIn = true;
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('loginError').style.display = 'none';
+                
+                // Show admin panel button
+                document.getElementById('adminPanelBtn').classList.add('visible');
+                
+                openAdmin();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            document.getElementById('adminPanelBtn').classList.remove('visible');
+            closeAdmin();
+            alert('আপনি সফলভাবে লগআউট হয়েছেন।');
+        }
+
+        // Mobile menu toggle
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    document.querySelector('.nav-links').classList.remove('active');
+                }
+            });
+        });
+
+        // Form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('আপনার মেসেজ পাঠানো হয়েছে! শীঘ্রই আমরা আপনার সাথে যোগাযোগ করব।');
+            this.reset();
+        });
+
+        // Admin Panel Functions
+        let imamData = [
+            { role: 'ইমাম (Imam)', name: 'মাওলানা ফজলুল করিম', phone: '01715-678901', type: 'imam' },
+            { role: 'সহকারী ইমাম (Asst. Imam)', name: 'মাওলানা আব্দুর রহমান', phone: '01716-789012', type: 'imam' },
+            { role: 'খতীব (Khatib)', name: 'মাওলানা ফজলুল করিম', phone: '01715-678901', type: 'khatib' }
+        ];
+
+        let committeeData = [
+            { role: 'সভাপতি (President)', name: 'মোহাম্মদ আব্দুল্লাহ', phone: '01712-345678', icon: 'user-tie' },
+            { role: 'সাধারণ সম্পাদক (Secretary)', name: 'মোহাম্মদ রফিকুল ইসলাম', phone: '01713-456789', icon: 'user-shield' },
+            { role: 'কোষাধ্যক্ষ (Treasurer)', name: 'মোহাম্মদ আলী হোসেন', phone: '01714-567890', icon: 'hand-holding-usd' }
+        ];
+
+        function openAdmin() {
+            if (!isLoggedIn) {
+                openLogin();
+                return;
+            }
+            document.getElementById('adminModal').style.display = 'flex';
+            loadPrayerTimes();
+            loadImamInputs();
+            loadCommitteeInputs();
+        }
+
+        function closeAdmin() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+        }
+
+        function loadPrayerTimes() {
+            document.getElementById('fajrInput').value = convertTo24Hour(document.getElementById('fajrTime').textContent);
+            document.getElementById('dhuhrInput').value = convertTo24Hour(document.getElementById('dhuhrTime').textContent);
+            document.getElementById('asrInput').value = convertTo24Hour(document.getElementById('asrTime').textContent);
+            document.getElementById('maghribInput').value = convertTo24Hour(document.getElementById('maghribTime').textContent);
+            document.getElementById('ishaInput').value = convertTo24Hour(document.getElementById('ishaTime').textContent);
+            document.getElementById('jummaInput').value = convertTo24Hour(document.getElementById('jummaTime').textContent);
+        }
+
+        function convertTo24Hour(time12h) {
+            if (!time12h) return '';
+            const [time, modifier] = time12h.split(' ');
+            let [hours, minutes] = time.split(':');
+            if (hours === '12') hours = '00';
+            if (modifier === 'PM') hours = parseInt(hours, 10) + 12;
+            return `${hours.padStart(2, '0')}:${minutes}`;
+        }
+
+        function convertTo12Hour(time24h) {
+            if (!time24h) return '';
+            const [hours, minutes] = time24h.split(':');
+            const modifier = hours >= 12 ? 'PM' : 'AM';
+            const hours12 = hours % 12 || 12;
+            return `${hours12}:${minutes} ${modifier}`;
+        }
+
+        function savePrayerTimes() {
+            document.getElementById('fajrTime').textContent = convertTo12Hour(document.getElementById('fajrInput').value);
+            document.getElementById('dhuhrTime').textContent = convertTo12Hour(document.getElementById('dhuhrInput').value);
+            document.getElementById('asrTime').textContent = convertTo12Hour(document.getElementById('asrInput').value);
+            document.getElementById('maghribTime').textContent = convertTo12Hour(document.getElementById('maghribInput').value);
+            document.getElementById('ishaTime').textContent = convertTo12Hour(document.getElementById('ishaInput').value);
+            document.getElementById('jummaTime').textContent = convertTo12Hour(document.getElementById('jummaInput').value);
+            
+            alert('নামাজের সময় আপডেট হয়েছে!');
+            closeAdmin();
+        }
+
+        function loadImamInputs() {
+            const container = document.getElementById('imamInputs');
+            container.innerHTML = '';
+            
+            imamData.forEach((imam, index) => {
+                const row = document.createElement('div');
+                row.className = 'member-row';
+                row.innerHTML = `
+                    <select class="admin-input" id="imamType${index}" style="padding: 10px;">
+                        <option value="imam" ${imam.type === 'imam' ? 'selected' : ''}>ইমাম</option>
+                        <option value="khatib" ${imam.type === 'khatib' ? 'selected' : ''}>খতীব</option>
+                    </select>
+                    <input type="text" class="admin-input" placeholder="নাম" value="${imam.name}" id="imamName${index}">
+                    <input type="text" class="admin-input" placeholder="ফোন" value="${imam.phone}" id="imamPhone${index}">
+                    <button class="delete-btn" onclick="deleteImam(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function addImamRow() {
+            imamData.push({ role: '', name: '', phone: '', type: 'imam' });
+            loadImamInputs();
+        }
+
+        function deleteImam(index) {
+            imamData.splice(index, 1);
+            loadImamInputs();
+        }
+
+        function saveImams() {
+            const rows = document.querySelectorAll('#imamInputs .member-row');
+            imamData = [];
+            
+            rows.forEach((row, index) => {
+                const type = document.getElementById(`imamType${index}`).value;
+                const name = document.getElementById(`imamName${index}`).value;
+                const phone = document.getElementById(`imamPhone${index}`).value;
+                
+                if (name) {
+                    const role = type === 'imam' ? 'ইমাম (Imam)' : 'খতীব (Khatib)';
+                    imamData.push({ role, name, phone, type });
+                }
+            });
+            
+            renderImams();
+            alert('ইমাম ও খতীবের তথ্য আপডেট হয়েছে!');
+            closeAdmin();
+        }
+
+        function renderImams() {
+            const grid = document.getElementById('imamGrid');
+            grid.innerHTML = '';
+            
+            imamData.forEach(imam => {
+                const card = document.createElement('div');
+                card.className = `committee-card ${imam.type}-card`;
+                
+                const icon = imam.type === 'khatib' ? 'microphone' : 'quran';
+                const extraInfo = imam.type === 'khatib' 
+                    ? '<i class="fas fa-calendar-day"></i> প্রতি শুক্রবার জুমার খুতবা<br><i class="fas fa-book"></i> ইসলামিক বক্তৃতা'
+                    : '<i class="fas fa-graduation-cap"></i> ক্বারি ও মুফাসসির<br><i class="fas fa-clock"></i> প্রতিদিন ৫ ওয়াক্ত নামাজ';
+                
+                card.innerHTML = `
+                    <div class="committee-img">
+                        <i class="fas fa-${icon}"></i>
+                    </div>
+                    <div class="committee-info">
+                        <div class="committee-role">${imam.role}</div>
+                        <h3>${imam.name}</h3>
+                        <p><i class="fas fa-phone"></i> ${imam.phone}</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">${extraInfo}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Update Khatib name in Jumma section
+            const khatib = imamData.find(i => i.type === 'khatib');
+            if (khatib) {
+                document.getElementById('khatibNameDisplay').textContent = khatib.name;
+            }
+        }
+
+        function loadCommitteeInputs() {
+            const container = document.getElementById('committeeInputs');
+            container.innerHTML = '';
+            
+            committeeData.forEach((member, index) => {
+                const row = document.createElement('div');
+                row.className = 'member-row';
+                row.innerHTML = `
+                    <input type="text" class="admin-input" placeholder="পদবি" value="${member.role}" id="role${index}">
+                    <input type="text" class="admin-input" placeholder="নাম" value="${member.name}" id="name${index}">
+                    <input type="text" class="admin-input" placeholder="ফোন" value="${member.phone}" id="phone${index}">
+                    <button class="delete-btn" onclick="deleteCommittee(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function addCommitteeRow() {
+            committeeData.push({ role: '', name: '', phone: '', icon: 'user' });
+            loadCommitteeInputs();
+        }
+
+        function deleteCommittee(index) {
+            committeeData.splice(index, 1);
+            loadCommitteeInputs();
+        }
+
+        function saveCommittee() {
+            const rows = document.querySelectorAll('#committeeInputs .member-row');
+            committeeData = [];
+            
+            rows.forEach((row, index) => {
+                const role = document.getElementById(`role${index}`).value;
+                const name = document.getElementById(`name${index}`).value;
+                const phone = document.getElementById(`phone${index}`).value;
+                
+                if (role && name) {
+                    let icon = 'user';
+                    if (role.includes('সভাপতি')) icon = 'user-tie';
+                    else if (role.includes('সম্পাদক')) icon = 'user-shield';
+                    else if (role.includes('কোষাধ্যক্ষ')) icon = 'hand-holding-usd';
+                    
+                    committeeData.push({ role, name, phone, icon });
+                }
+            });
+            
+            renderCommittee();
+            alert('কমিটি তথ্য আপডেট হয়েছে!');
+            closeAdmin();
+        }
+
+        function renderCommittee() {
+            const grid = document.getElementById('committeeGrid');
+            grid.innerHTML = '';
+            
+            committeeData.forEach(member => {
+                const card = document.createElement('div');
+                card.className = 'committee-card';
+                card.innerHTML = `
+                    <div class="committee-img">
+                        <i class="fas fa-${member.icon}"></i>
+                    </div>
+                    <div class="committee-info">
+                        <div class="committee-role">${member.role}</div>
+                        <h3>${member.name}</h3>
+                        <p><i class="fas fa-phone"></i> ${member.phone}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('adminModal').addEventListener('click', function(e) {
+            if (e.target === this) closeAdmin();
+        });
+
+        document.getElementById('loginModal').addEventListener('click', function(e) {
+            if (e.target === this) closeLogin();
+        });
+    </script>
+</body>
+</html>
